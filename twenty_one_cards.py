@@ -19,7 +19,7 @@ class TwentyOneCards:
         self.cards = []
 
         the_ace = cards.Symbols.ACE
-        usual_cards = [e.value for e in cards.Symbols][1:10]  # cards from 2 to 10
+        usual_cards_symbol = [symbol for symbol in cards.Symbols][1:10]  # cards from 2 to 10
 
         # generate cards and set the points for the game
         for deck, suit, symbol in itertools.product(
@@ -42,7 +42,7 @@ class TwentyOneCards:
                     p_alternative_value=1,
                 )
 
-            elif card.symbol in usual_cards:
+            elif card.symbol in usual_cards_symbol:
                 card.set_point(p_value=int(symbol.value))
 
             elif card.symbol is cards.Symbols.JACK:
