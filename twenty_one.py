@@ -1,12 +1,16 @@
 """
 The implementation of the costumized 21 game
 """
+import logging, coloredlogs
+coloredlogs.install(level=logging.DEBUG)
+
 from abc import abstractmethod
 from typing import List
 from enum import Enum
 
 from twenty_one_cards import TwentyOneCards
 from cards import Card
+
 
 
 class Roles(Enum):
@@ -124,49 +128,54 @@ class Player(User):
     def place_initial_bet(self, p_bet_amount: int):
         self.capital -= p_bet_amount
         self.sets[0].bet_amount += p_bet_amount
+        logging.info(f"{self.name} beted {p_bet_amount}.")
 
     def _get_set_states(self):
         sets_state = [set.state for set in self.sets]
         return sets_state
 
     def do_hit(self, p_card: Card):
+        logging.info(f"{self.name} choosed to STAND.")
         # check if player can hit
         sets_state = self._get_set_states()
         if not States.OPEN_TO_HIT in sets_state:
-            raise Exception(f"There is no open to hit set to hit anymore.")
-        target_set = sets_state.index(States.OPEN_TO_HIT)
-        
-        # do hit
-        self.append_card(p_card=p_card, p_set_number=target_set)
+            logging.warning(f"There is no open to hit set to hit anymore. Action ignored.")
+        else:
+            # do hit
+            target_set = sets_state.index(States.OPEN_TO_HIT)
+            self.append_card(p_card=p_card, p_set_number=target_set)
 
     def do_stand(self):
+        logging.info(f"{self.name} choosed to STAND.")
         # check if player can stand
         sets_state = self._get_set_states()
         if not States.OPEN_TO_HIT in sets_state:
-            raise Exception(f"There is no open set to stand.")
-        target_set = sets_state.index(States.OPEN_TO_HIT)
-
-        # do hit
-        self.sets[target_set].state = States.STAND
+            logging.warning(f"There is no open set to stand. Action ignored.")
+        else:
+            # do hit
+            target_set = sets_state.index(States.OPEN_TO_HIT)
+            self.sets[target_set].state = States.STAND
 
     def do_split(self):
+        logging.info(f"{self.name} choosed to SPLIT.")
         # check if player can split
         sets_state = self._get_set_states()
         # -- if there is already an open to hit set
         if not States.OPEN_TO_HIT in sets_state:
-            raise Exception(f"Can not split as there is no open to hit set.")
-        target_set = sets_state.index(States.OPEN_TO_HIT)
-        # -- if the open set has more than one card
-        if len(self.sets[target_set].cards) > 2:
-            raise Exception(f"Can not split when there are 3 cards or more in a set.")
-        # -- if the points of the cards in the set are the same
-        if self.sets[target_set].cards[0].point != self.sets[target_set].cards[1].point:
-            raise Exception(f"The points of the cards in set are not equal to perform split.")
-
-        # do split
-        card = self.sets[target_set].cards.pop()
-        self.sets.append(Set())
-        self.sets[-1].cards.append(card)
+            logging.warning(f"Can not split as there is no open to hit set. Action ignored.")
+        else:
+            target_set = sets_state.index(States.OPEN_TO_HIT)
+            # -- if the open set has more than one card
+            if len(self.sets[target_set].cards) > 2:
+                logging.warning(f"Can not split when there are 3 cards or more in a set. Action ignored.")
+            # -- if the points of the cards in the set are the same
+            elif self.sets[target_set].cards[0].point != self.sets[target_set].cards[1].point:
+                logging.warning(f"The points of the cards in set are not equal to perform split. Action ignored.")
+            else:
+                # do split
+                card = self.sets[target_set].cards.pop()
+                self.sets.append(Set())
+                self.sets[-1].cards.append(card)
 
 
 class Bank(User):
@@ -176,20 +185,22 @@ class Bank(User):
         self.sets.append(Set())  # but the bank can hold only one set
 
     def do_hit(self, p_card: Card):
+        logging.info(f"{self.name} choosed to HIT.")
         # check if bank can hit
         # -- if there is already an open to hit set
         if not States.OPEN_TO_HIT is self.sets[0].state:
-            raise Exception(f"There is no open to hit set to hit anymore.")
-        # -- if there the total points of the held cards is less than or equal to 16
-        if self.sets[0].get_total_points() > 17:
-            raise Exception(f"Bank can't hit when her totla point is more than 16.")
-            
-        # do hit
-        self.append_card(p_card=p_card, p_set_number=0) 
-
+            logging.warning(f"There is no open to hit set to hit anymore. Action ignored.")
+        else:
+            # -- if there the total points of the held cards is less than or equal to 16
+            if self.sets[0].get_total_points() > 17:
+                logging.warning(f"Bank can't hit when her totla point is more than 16. Action ignored")
+            else:
+                # do hit
+                self.append_card(p_card=p_card, p_set_number=0) 
 
     def do_stand(self):
-        pass
+        logging.info(f"{self.name} choosed to HIT.")
+        self.sets[0].state = States.STAND
 
 
 class Game:
@@ -239,6 +250,8 @@ class Game:
         card = self.get_a_random_card()
         self.bank.append_card(p_card=card)
 
+        self.draw_the_game()
+
     def phase_2__place_bet(self, p_player: Player, p_bet_amount: int):
         """
         Places bets both for bank and players.
@@ -253,6 +266,8 @@ class Game:
             card = self.get_a_random_card()
             player.append_card(p_card=card)
 
+        self.draw_the_game()
+
     def phase_4__take_action_for_player(self, p_player: Player, p_action: Action):
         if p_action is Action.HIT:
             card = self.get_a_random_card()
@@ -263,6 +278,8 @@ class Game:
 
         if p_action is Action.SPLIT:
             p_player.do_split()
+
+        self.draw_the_game()
 
     def phase_5__reveals_banks_second_card(self):
         """
@@ -276,6 +293,8 @@ class Game:
         # check internal conditions and do hit if possible
         card = self.get_a_random_card()
         self.bank.do_hit(p_card=card)
+
+        self.draw_the_game()
 
     def phase_6__bank_hits_until_bust_or_stand(self):
         # check if bank should hit
@@ -299,8 +318,9 @@ class Game:
             self.bank.do_hit(p_card=card)
         # -- if bank is not bust then she should stand when her score has exceed 16
         if not self.bank.sets[0].state is States.BUST:
-            self.bank.sets[0].state = States.STAND
+            self.bank.do_stand()
         
+        self.draw_the_game()
         self.evaluate()
 
     def evaluate(self):
@@ -309,7 +329,7 @@ class Game:
         """
         # players set bust 
         for player in self.players:
-            for set in player.sets:
+            for i, set in enumerate(player.sets):
                 if set.state is States.BUST:
                     # bank wins the set
                     set.bet_amount = 0
@@ -325,7 +345,7 @@ class Game:
         # check by point of sets if no-one bust
         bank_total_points = self.bank.sets[0].get_total_points()
         for player in self.players:
-            for set in player.sets:
+            for i, set in enumerate(player.sets):
                 if set.get_total_points() <= bank_total_points:
                     # bank wins the set
                     set.bet_amount = 0
@@ -333,4 +353,47 @@ class Game:
                     # player wins the set
                     player.capital += set.bet_amount * 2 
                     set.bet_amount = 0
+
+        for player in self.players:
+            logging.info(f"{player.name}'s capital is {player.capital}.")
     
+    def draw_the_game(self):
+        print("-"*20)
+
+        print("Bank:")
+        print("\t[ ", end="")
+        for card in self.bank.sets[0].cards:
+            print(card, end=" ")
+        print(f"] => {self.bank.sets[0].get_total_points()} points")
+
+        for player in self.players:
+            print(f"{player.name}:")
+            for i, set in enumerate(player.sets):
+                print(f"{i}:\t[ ", end="")
+                for card in set.cards:
+                    print(card, end=" ")
+                print(f"] => {set.get_total_points()} points")
+        
+
+
+# mahdi = Player(p_capital=1000, p_name="Mahdi")
+# mahsa = Player(p_capital=1000, p_name="Mahsa")
+# game = Game(p_players=[mahdi, mahsa])
+
+
+# game.phase_1__start()
+
+
+# game.phase_2__place_bet(mahdi, 100)
+# game.phase_2__place_bet(mahsa, 100)
+
+# game.phase_3__give_players_the_second_card()
+
+# game.phase_4__take_action_for_player(mahdi, Action.HIT)
+# game.phase_4__take_action_for_player(mahdi, Action.STAND)
+
+# game.phase_4__take_action_for_player(mahsa, Action.HIT)
+# game.phase_4__take_action_for_player(mahsa, Action.STAND)
+
+# game.phase_5__reveals_banks_second_card()
+# game.phase_6__bank_hits_until_bust_or_stand()
