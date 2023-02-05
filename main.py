@@ -67,7 +67,7 @@ if __name__ == "__main__":
         game.phase_6__bank_hits_until_bust_or_stand()
 
         # play again?
-        do_play_again = str.lower(input("Enter Y/s to play again, any other key to stop: "))
+        do_play_again = str.lower(input("Enter Y/y to play again, any other key to stop: "))
         if do_play_again != 'y':
             break
 
