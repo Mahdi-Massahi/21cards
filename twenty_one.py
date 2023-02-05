@@ -51,7 +51,7 @@ class States:
 
 class Set:
     """
-    TODO
+    Holds the set of cards of the game 
     """
     cards: List[Card]
     state: States
@@ -77,7 +77,7 @@ class Set:
 
 class User:
     """
-    TODO
+    A base class for bank and players
     """
     name: str
     role: Roles
@@ -104,7 +104,6 @@ class User:
         pass
 
     def append_card(self, p_card: Card, p_set_number: int=0):
-
         # set should exist
         if p_set_number > (len(self.sets)-1):
             raise Exception("Wrong set number is passed.")
@@ -115,12 +114,10 @@ class User:
 
         self.sets[p_set_number].append_card(p_card)
 
-    # TODO: check abstracted methods 
-
 
 class Player(User):
     """
-    TODO
+    A user who gamples
     """
     capital: int = 0
 
@@ -187,9 +184,8 @@ class Player(User):
 
 class Bank(User):
     """
-    TODO
+    A user who deals 
     """
-
     def __init__(self, p_name: str) -> None:
         super().__init__(Roles.BANK, p_name)
         self.sets.append(Set())  # but the bank can hold only one set
@@ -215,9 +211,8 @@ class Bank(User):
 
 class Game:
     """
-    TODO
+    The class which hold the functionalities of the game
     """
-
     cards: List[Card]
     bank: Bank
     players: List[Player]
@@ -289,6 +284,9 @@ class Game:
         self.draw_the_game()
 
     def phase_4__take_action_for_player(self, p_player: Player, p_action: Action):
+        """
+        Perform action for the player
+        """
         if p_action is Action.HIT:
             card = self.get_a_random_card()
             p_player.do_hit(p_card=card)
@@ -317,6 +315,9 @@ class Game:
         self.draw_the_game()
 
     def phase_6__bank_hits_until_bust_or_stand(self):
+        """
+        Continously perform hit action for bank untill it becomes impossible
+        """
         # check if bank should hit
         # -- if players are ready
         can_bank_hit = self.check_if_all_players_are_ready()
@@ -378,8 +379,10 @@ class Game:
             logging.info(f"{player.name}'s capital is {player.capital}.")
     
     def draw_the_game(self):
+        """
+        Draw the cards and points in console 
+        """
         print("-"*40)
-
         print("Bank:")
         print("\t[ ", end="")
         for card in self.bank.sets[0].cards:
