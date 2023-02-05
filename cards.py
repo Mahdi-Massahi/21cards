@@ -45,6 +45,13 @@ class Card:
     """
     a single card
     """
+    suit: Suits
+    symbol: Symbols
+    color: Colors
+    deck_number: int
+    point: int
+    alternative_point: int
+
     def __init__(self, p_suit: Suits, p_symbol: Symbols, p_deck_number: int=1) -> None:
         self.suit = p_suit
         self.symbol = p_symbol
