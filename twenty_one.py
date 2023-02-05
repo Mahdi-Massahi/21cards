@@ -12,7 +12,6 @@ from twenty_one_cards import TwentyOneCards
 from cards import Card
 
 
-
 class Roles(Enum):
     """
     the user type of the user
@@ -45,12 +44,15 @@ class States:
     STAND: user no longer can hit
     BUST: user has bust (her cards' point has exceeded 21)
     """
-    OPEN_TO_HIT: str = "open to hit"
+    OPEN_TO_HIT: str = "open-to-hit"
     STAND: str = "stand"
     BUST: str = "bust"
 
 
 class Set:
+    """
+    TODO
+    """
     cards: List[Card]
     state: States
     bet_amount: int
@@ -74,6 +76,9 @@ class Set:
 
 
 class User:
+    """
+    TODO
+    """
     name: str
     role: Roles
     sets: List[Set]
@@ -114,7 +119,9 @@ class User:
 
 
 class Player(User):
-
+    """
+    TODO
+    """
     capital: int = 0
 
     def __init__(self, p_name: str, p_capital: int) -> None:
@@ -179,6 +186,9 @@ class Player(User):
 
 
 class Bank(User):
+    """
+    TODO
+    """
 
     def __init__(self, p_name: str) -> None:
         super().__init__(Roles.BANK, p_name)
@@ -204,6 +214,9 @@ class Bank(User):
 
 
 class Game:
+    """
+    TODO
+    """
 
     cards: List[Card]
     bank: Bank
@@ -365,7 +378,7 @@ class Game:
             logging.info(f"{player.name}'s capital is {player.capital}.")
     
     def draw_the_game(self):
-        print("-"*20)
+        print("-"*40)
 
         print("Bank:")
         print("\t[ ", end="")
