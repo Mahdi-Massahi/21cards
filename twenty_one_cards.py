@@ -2,13 +2,18 @@
 This script prepares and generates the cards for the 21 game.
 """
 import itertools
+from typing import List
 
 import cards
 
 from random import shuffle
 
 
-class TwentyOne:
+class TwentyOneCards:
+    """
+    the cards with the asociated points for the 21 game
+    """
+    cards_set: List[cards.Card]
 
     def __init__(self, p_number_of_decks: int=1, do_shuffle: bool=True) -> None:
         self.cards = []
