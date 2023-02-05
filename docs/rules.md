@@ -44,7 +44,7 @@ who gets the bet
 - note that some players or bank may have already bust
 1. if the bank and player both bust, the bank wins.
 2. if the bank bust, all standing players win and the game is over.
-3. if the user's points is less than or equal to the bank's points, the bank wins.
+3. if the player's points is less than or equal to the bank's points, the bank wins. Else the the player wins.
 
 
 ### Bank:
