@@ -379,28 +379,5 @@ class Game:
                 print(f"{i}:\t[ ", end="")
                 for card in set.cards:
                     print(card, end=" ")
-                print(f"] => {set.get_total_points()} points")
+                print(f"] => {set.get_total_points()} points - {set.state}")
         
-
-
-# mahdi = Player(p_capital=1000, p_name="Mahdi")
-# mahsa = Player(p_capital=1000, p_name="Mahsa")
-# game = Game(p_players=[mahdi, mahsa])
-
-
-# game.phase_1__start()
-
-
-# game.phase_2__place_bet(mahdi, 100)
-# game.phase_2__place_bet(mahsa, 100)
-
-# game.phase_3__give_players_the_second_card()
-
-# game.phase_4__take_action_for_player(mahdi, Action.HIT)
-# game.phase_4__take_action_for_player(mahdi, Action.STAND)
-
-# game.phase_4__take_action_for_player(mahsa, Action.HIT)
-# game.phase_4__take_action_for_player(mahsa, Action.STAND)
-
-# game.phase_5__reveals_banks_second_card()
-# game.phase_6__bank_hits_until_bust_or_stand()
