@@ -58,7 +58,6 @@ class Set:
     def __init__(self) -> None:
         self.cards = []
         self.state = States.OPEN_TO_HIT
-        self.has_won = None
         self.bet_amount = 0
 
     def append_card(self, p_card: Card):
@@ -102,7 +101,8 @@ class User:
     def append_card(self, p_card: Card, p_set_number: int=0):
 
         # set should exist
-        assert p_set_number <= (len(self.sets)-1)
+        if p_set_number > (len(self.sets)-1):
+            raise Exception("Wrong set number is passed.")
 
         # bank cant split (have more than one set)
         if self.role is Roles.BANK:
@@ -135,7 +135,7 @@ class Player(User):
         return sets_state
 
     def do_hit(self, p_card: Card):
-        logging.info(f"{self.name} choosed to STAND.")
+        logging.info(f"{self.name} choosed to HIT.")
         # check if player can hit
         sets_state = self._get_set_states()
         if not States.OPEN_TO_HIT in sets_state:
@@ -220,6 +220,13 @@ class Game:
             do_shuffle=True,
             p_number_of_decks=(len(p_players)//4)+1,
         ).cards
+
+    def reset(self):
+        for player in self.players:
+            for set in player.sets:
+                set.cards.clear()
+                set.bet_amount = 0
+                set.state = States.OPEN_TO_HIT
 
     def get_a_random_card(self) -> Card:
         a_random_card = self.cards[self.current_random_card_index]
