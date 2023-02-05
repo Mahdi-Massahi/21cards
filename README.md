@@ -40,20 +40,20 @@ who gets the bet
 8. make the charges
 
 
-### Evaluate:
+### Evaluate
 - note that some players or bank may have already bust
 1. if the bank and player both bust, the bank wins.
 2. if the bank bust, all standing players win and the game is over.
 3. if the player's points is less than or equal to the bank's points, the bank wins. Else the the player wins.
 
 
-### Bank:
+### Bank
 1. bank plays if all players are stand or bust and there are players who are not bust.
 2. bank must hit when it has a total of 16 points or less.
 3. bank must stand with a total of 17 points or more.
 
 
-### Player:
+### Player
 1. busted player should be skipped 
 
 
@@ -64,3 +64,8 @@ Some points which were not included in the provided document are as follows:
 3. ace split rule of blackjack is ignored
 4. insurance is ignored
 5. balckjak is ignored (winning right away by 2 cards equal to 21 before the bank reveals her second card)
+
+-----
+
+# How to run
+simply just execute the 'main.py' file. No extra requirement is required.
