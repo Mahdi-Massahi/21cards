@@ -3,10 +3,9 @@ This script prepares and generates the cards for the 21 game.
 """
 import itertools
 from typing import List
+from random import shuffle
 
 import cards
-
-from random import shuffle
 
 
 class TwentyOneCards:
