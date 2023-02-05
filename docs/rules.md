@@ -34,7 +34,7 @@ who gets the bet
 4. players choose whether stand, hit, or split one by one as an action if they can (Player's rules), untill they stand or bust.  
     - at each hit we should check player for being bust
     - if player has more than one set, the same rules are applied for each set independently
-5. bank reveals her second card (equivalet to one hit for the bank) and check if she bust. (blackjack is ignored here)
+5. bank reveals her second card (equivalet to one hit for the bank). (blackjack is ignored here)
 6. bank hit if she can untill she bust or stand (Bank's rules)
 7. evaluate
 8. make the charges
