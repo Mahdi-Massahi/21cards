@@ -1,4 +1,5 @@
 from typing import List
+from random import randint, seed
 
 from twenty_one import Game, Player, States, Action
 
@@ -6,6 +7,9 @@ from twenty_one import Game, Player, States, Action
 PLAYER_CAPITAL = 1000
 
 if __name__ == "__main__":
+    random_seed = randint(1, 99999)
+    print("seed:", random_seed)
+    seed(random_seed)
     
     # sign-up players
     players: List[Player] = []
