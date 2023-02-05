@@ -3,14 +3,13 @@ from typing import List
 from twenty_one import Game, Player, States, Action
 
 
-MAX_NUMBER_OF_PLAYERS = 6
 PLAYER_CAPITAL = 1000
 
 if __name__ == "__main__":
     
     # sign-up players
     players: List[Player] = []
-    for _ in range(0, MAX_NUMBER_OF_PLAYERS):
+    while True:
         player_name = input("Enter a name to create a player: ")
         player = Player(
             p_capital=PLAYER_CAPITAL,
