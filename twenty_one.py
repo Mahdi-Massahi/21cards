@@ -9,7 +9,7 @@ from typing import List
 from enum import Enum
 
 from twenty_one_cards import TwentyOneCards
-from cards import Card
+from cards import Card, Symbols
 
 
 class Roles(Enum):
@@ -217,7 +217,6 @@ class Game:
     bank: Bank
     players: List[Player]
     current_random_card_index: int = 0
-    state:int = 0  # the current state of the game
 
     def __init__(self, p_players: List[Player]) -> None:
         self.players = p_players
@@ -228,6 +227,26 @@ class Game:
             do_shuffle=True,
             p_number_of_decks=(len(p_players)//4)+1,
         ).cards
+
+    def set_what_cards_to_reveal(self, p_symbols: List[Symbols]):
+        """
+        A heler function for unit testing which allows us to choose what cards to reveal
+        The filter is the cards symbol as it's the only factor wich determins the point of the card.
+        """
+        def find_the_card(cards: List[Card], p_symbol: Symbols):
+            """
+            A helper function for finding the target card based on the symbol it has
+            """
+            for card in cards:
+                if card.symbol is p_symbol:
+                    return card
+
+        target_cards: List[Card] = []
+        for symbol in p_symbols:
+            target_cards.append(find_the_card(cards=self.cards, p_symbol=symbol))
+
+        # replace the previously generated set of cards to the new set of cards
+        self.cards = target_cards
 
     def reset(self):
         for player in self.players:
@@ -322,7 +341,8 @@ class Game:
         # -- if players are ready
         can_bank_hit = self.check_if_all_players_are_ready()
         if not can_bank_hit:
-            raise Exception(f"Can't bank cant hit as not all players have finished their sets.")
+            raise Exception(f"Bank can't hit as not all players have finished their sets.")
+        
         # -- if there is at least one player who stands
         is_there_atleast_one_standing_player = False
         for player in self.players:
@@ -332,14 +352,18 @@ class Game:
                     break
             if is_there_atleast_one_standing_player:
                 break
-        # -- if bank's points does not exceed 16
-        while self.bank.sets[0].get_total_points() <= 16:
-            # check few other conditions and do hit if possible
-            card = self.get_a_random_card()
-            self.bank.do_hit(p_card=card)
-        # -- if bank is not bust then she should stand when her score has exceed 16
-        if not self.bank.sets[0].state is States.BUST:
+        if not is_there_atleast_one_standing_player: 
             self.bank.do_stand()
+        else:
+            # -- if bank's points does not exceed 16
+            while self.bank.sets[0].get_total_points() <= 16:
+                # check few other conditions and do hit if possible
+                card = self.get_a_random_card()
+                self.bank.do_hit(p_card=card)
+
+            # -- if bank is not bust then she should stand when her score has exceed 16
+            if not self.bank.sets[0].state is States.BUST:
+                self.bank.do_stand()
         
         self.draw_the_game()
         self.evaluate()
@@ -387,7 +411,7 @@ class Game:
         print("\t[ ", end="")
         for card in self.bank.sets[0].cards:
             print(card, end=" ")
-        print(f"] => {self.bank.sets[0].get_total_points()} points")
+        print(f"] => {self.bank.sets[0].get_total_points()} points - {self.bank.sets[0].state}")
 
         for player in self.players:
             print(f"{player.name}:")
