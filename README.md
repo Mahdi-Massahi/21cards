@@ -68,4 +68,7 @@ Some points which were not included in the provided document are as follows:
 -----
 
 # How to run
-simply just execute the 'main.py' file. No extra requirement is required.
+Simply just execute the 'main.py' script. No extra requirement is required.
+
+# How to run tests
+'python3 tests.py -b'
