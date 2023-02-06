@@ -12,6 +12,9 @@ class TestGameSinglePlayer(unittest.TestCase):
         self.game = Game(p_players=[self.player])
 
     def test_case_01(self):
+        """
+        Player win
+        """
         self.game.reset()
         self.game.players[0].capital = self.player_initial_capital
 
@@ -32,6 +35,9 @@ class TestGameSinglePlayer(unittest.TestCase):
 
 
     def test_case_02(self):
+        """
+        Bank win
+        """
         self.game.reset()
         self.game.players[0].capital = self.player_initial_capital
         
@@ -51,6 +57,9 @@ class TestGameSinglePlayer(unittest.TestCase):
 
 
     def test_case_03(self):
+        """
+        Equal points for player and bank, bank win
+        """
         self.game.reset()
         self.game.players[0].capital = self.player_initial_capital
         
@@ -69,6 +78,9 @@ class TestGameSinglePlayer(unittest.TestCase):
 
 
     def test_case_04(self):
+        """
+        single user bust, bank win
+        """
         self.game.reset()
         self.game.players[0].capital = self.player_initial_capital
         
@@ -91,6 +103,9 @@ class TestGameSinglePlayer(unittest.TestCase):
 
 
     def test_case_05(self):
+        """
+        bank bust 
+        """
         self.game.reset()
         self.game.players[0].capital = self.player_initial_capital
         
