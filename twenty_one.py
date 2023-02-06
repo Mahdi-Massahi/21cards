@@ -70,7 +70,10 @@ class Set:
         total_points = sum([card.point for card in self.cards])
         total_points_alternative = sum([card.alternative_point for card in self.cards if card.alternative_point is not None])
         # as its the ACE wich has 2 possible points; 11 and 1 which the difference is 11-1=10:
-        return total_points if total_points <= 21 else total_points - total_points_alternative * 10
+        if total_points_alternative >= 2: # TODO: provide a better solution
+            return total_points if total_points <= 21 else total_points - (total_points_alternative-1) * 10
+        else:
+            return total_points if total_points <= 21 else total_points - total_points_alternative * 10
 
     def check_if_bust(self):
         total_point = self.get_total_points()

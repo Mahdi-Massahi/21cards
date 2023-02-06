@@ -175,6 +175,44 @@ class TestGameSinglePlayer(unittest.TestCase):
         self.assertEqual(self.game.players[0].capital, self.player_initial_capital - 3*bet_amount)
 
 
+    def test_case_08(self):
+        """
+        Multiplayer
+        """
+        self.players_initial_capital = 1000
+        self.player_1 = Player(p_name="Player I", p_capital=self.players_initial_capital)
+        self.player_2 = Player(p_name="Player II", p_capital=self.players_initial_capital)
+        self.player_3 = Player(p_name="Player III", p_capital=self.players_initial_capital)
+        self.game = Game(p_players=[self.player_1, self.player_2, self.player_3])
+
+        cards_symbols = [Symbols.SEVEN, Symbols.QUEEN, Symbols.ACE, Symbols.TEN, Symbols.ACE, Symbols.NINE, Symbols.ACE, Symbols.NINE, Symbols.TWO, Symbols.FIVE, Symbols.FOUR, Symbols.EIGHT, Symbols.SEVEN]
+        self.game.set_what_cards_to_reveal(p_symbols=cards_symbols)
+
+        bet_amount = 100
+        self.game.phase_1__start()
+        self.game.phase_2__place_bet(self.player_1, bet_amount)
+        self.game.phase_2__place_bet(self.player_2, bet_amount)
+        self.game.phase_2__place_bet(self.player_3, bet_amount)
+        self.game.phase_3__give_players_the_second_card()
+
+        self.game.phase_4__take_action_for_player(self.player_1, Action.HIT)
+        self.game.phase_4__take_action_for_player(self.player_1, Action.STAND)
+
+        self.game.phase_4__take_action_for_player(self.player_2, Action.HIT)
+        self.game.phase_4__take_action_for_player(self.player_2, Action.HIT)
+        self.game.phase_4__take_action_for_player(self.player_2, Action.HIT)
+
+        self.game.phase_4__take_action_for_player(self.player_3, Action.HIT)
+        self.game.phase_4__take_action_for_player(self.player_3, Action.STAND)
+
+        self.game.phase_5__reveals_banks_second_card()
+        self.game.phase_6__bank_hits_until_bust_or_stand()
+
+        self.assertEqual(self.game.players[0].capital, self.players_initial_capital - bet_amount)
+        self.assertEqual(self.game.players[1].capital, self.players_initial_capital - bet_amount)
+        self.assertEqual(self.game.players[2].capital, self.players_initial_capital + bet_amount)
+
+
 
 if __name__ == '__main__':
     unittest.main()
