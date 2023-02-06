@@ -11,20 +11,11 @@
 
 
 ## Defenitions
-### stand
-hold the total points and end the turn and finish playing
-
-### hit
-ask for a card  
-
-### split
-if the user holds 2 initial cards with the same points in a set, user can split it into two sets which allows player to play twice; one game per card. The bet does not split but both cards get original bet amount.  
-
-### bust
-when the user's points exceed 21
-
-### winner
-who gets the bet  
+`stand:` hold the total points and end the turn and finish playing  
+`hit:` ask for a card  
+`split:` if the user holds 2 initial cards with the same points in a set, user can split it into two sets which allows player to play twice; one game per card. The bet does not split but both cards get original bet amount.  
+`bust:` when the user's points exceed 21  
+`winner:` who gets the bet  
 
 
 ## Flow
@@ -36,8 +27,7 @@ who gets the bet
     - if player has more than one set, the same rules are applied for each set independently
 5. bank reveals her second card (equivalet to one hit for the bank). (blackjack is ignored here)
 6. bank hit if she can untill she bust or stand (Bank's rules)
-7. evaluate
-8. make the charges
+7. evaluate and make the charges
 
 
 ### Evaluate
@@ -65,10 +55,9 @@ Some points which were not included in the provided document are as follows:
 4. insurance is ignored
 5. balckjak is ignored (winning right away by 2 cards equal to 21 before the bank reveals her second card)
 
------
 
 # How to run
-Simply just execute the 'main.py' script. No extra requirement is required.
+Simply just execute the `main.py` script. No extra requirement is required.
 
 # How to run tests
-'python3 tests.py -b'
+```python3 tests.py -b```
