@@ -67,11 +67,15 @@ class Set:
         self.check_if_bust()
 
     def get_total_points(self):
-        return sum([card.point for card in self.cards])
+        total_points = sum([card.point for card in self.cards])
+        total_points_alternative = sum([card.alternative_point for card in self.cards if card.alternative_point is not None])
+        # as its the ACE wich has 2 possible points; 11 and 1 which the difference is 11-1=10:
+        return total_points if total_points <= 21 else total_points - total_points_alternative * 10
 
     def check_if_bust(self):
         total_point = self.get_total_points()
-        if total_point > 21:
+
+        if total_point > 21 and total_point:
             self.state = States.BUST
 
 
@@ -180,6 +184,9 @@ class Player(User):
                 card = self.sets[target_set].cards.pop()
                 self.sets.append(Set())
                 self.sets[-1].cards.append(card)
+                bet_amount = self.sets[target_set].bet_amount
+                self.capital -= bet_amount
+                self.sets[-1].bet_amount = bet_amount
 
 
 class Bank(User):
@@ -352,6 +359,7 @@ class Game:
                     break
             if is_there_atleast_one_standing_player:
                 break
+
         if not is_there_atleast_one_standing_player: 
             self.bank.do_stand()
         else:
@@ -374,7 +382,7 @@ class Game:
         """
         # players set bust 
         for player in self.players:
-            for i, set in enumerate(player.sets):
+            for set in player.sets:
                 if set.state is States.BUST:
                     # bank wins the set
                     set.bet_amount = 0
@@ -390,7 +398,7 @@ class Game:
         # check by point of sets if no-one bust
         bank_total_points = self.bank.sets[0].get_total_points()
         for player in self.players:
-            for i, set in enumerate(player.sets):
+            for set in player.sets:
                 if set.get_total_points() <= bank_total_points:
                     # bank wins the set
                     set.bet_amount = 0

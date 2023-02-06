@@ -106,8 +106,73 @@ class TestGameSinglePlayer(unittest.TestCase):
         self.game.phase_6__bank_hits_until_bust_or_stand()
 
         self.assertCountEqual(self.game.bank.sets[0].state, States.BUST)
-
         self.assertEqual(self.game.players[0].capital, self.player_initial_capital + bet_amount)
+
+
+    def test_case_06(self):
+        """
+        Spliting when bank bust, player's one set wins and the other set loses
+        """
+        self.game.reset()
+        self.game.players[0].capital = self.player_initial_capital
+        
+        cards_symbols = [Symbols.SEVEN, Symbols.SIX, Symbols.SEVEN, Symbols.FIVE, Symbols.NINE, Symbols.TEN, Symbols.EIGHT, Symbols.NINE, Symbols.EIGHT]
+        self.game.set_what_cards_to_reveal(p_symbols=cards_symbols)
+
+        bet_amount = 100
+        self.game.phase_1__start()
+        self.game.phase_2__place_bet(self.player, bet_amount)
+        self.game.phase_3__give_players_the_second_card()
+
+        self.game.phase_4__take_action_for_player(self.player, Action.SPLIT)
+        self.game.phase_4__take_action_for_player(self.player, Action.HIT)
+        self.game.phase_4__take_action_for_player(self.player, Action.HIT)
+        self.game.phase_4__take_action_for_player(self.player, Action.STAND)
+        
+        self.game.phase_4__take_action_for_player(self.player, Action.HIT)
+        self.game.phase_4__take_action_for_player(self.player, Action.HIT)
+
+        self.game.phase_5__reveals_banks_second_card()
+        self.game.phase_6__bank_hits_until_bust_or_stand()
+
+        self.assertCountEqual(self.game.players[0].sets[1].state, States.BUST)
+        self.assertCountEqual(self.game.bank.sets[0].state, States.BUST)
+        self.assertEqual(self.game.players[0].capital, self.player_initial_capital)
+
+
+    def test_case_07(self):
+        """
+        Two splits in a row
+        """
+        self.game.reset()
+        self.game.players[0].capital = self.player_initial_capital
+        
+        cards_symbols = [Symbols.ACE, Symbols.TWO, Symbols.ACE, Symbols.ACE, Symbols.NINE, Symbols.SIX, Symbols.TEN, Symbols.EIGHT, Symbols.TEN, Symbols.NINE, Symbols.TEN]
+        self.game.set_what_cards_to_reveal(p_symbols=cards_symbols)
+
+        bet_amount = 200
+        self.game.phase_1__start()
+        self.game.phase_2__place_bet(self.player, bet_amount)
+        self.game.phase_3__give_players_the_second_card()
+
+        self.game.phase_4__take_action_for_player(self.player, Action.SPLIT)
+        self.game.phase_4__take_action_for_player(self.player, Action.HIT)
+        self.game.phase_4__take_action_for_player(self.player, Action.SPLIT)
+        self.game.phase_4__take_action_for_player(self.player, Action.HIT)
+        self.game.phase_4__take_action_for_player(self.player, Action.STAND)
+
+        self.game.phase_4__take_action_for_player(self.player, Action.HIT)
+        self.game.phase_4__take_action_for_player(self.player, Action.HIT)
+        self.game.phase_4__take_action_for_player(self.player, Action.HIT)
+
+        self.game.phase_4__take_action_for_player(self.player, Action.HIT)
+        self.game.phase_4__take_action_for_player(self.player, Action.STAND)
+
+        self.game.phase_5__reveals_banks_second_card()
+        self.game.phase_6__bank_hits_until_bust_or_stand()
+
+        self.assertCountEqual(self.game.players[0].sets[1].state, States.BUST)
+        self.assertEqual(self.game.players[0].capital, self.player_initial_capital - 3*bet_amount)
 
 
 
